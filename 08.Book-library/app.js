@@ -4,12 +4,18 @@ function attachEvents() {
   const loadBooksButton = document.getElementById("loadBooks");
   const bookListElement = document.getElementById("book-list");
 
-  const createBookButton = document.querySelector('#form button');
+  const createBookButton = document.querySelector('div#form button');
+const updateBookButton = document.createElement('button');
+updateBookButton.textContent = 'Update' 
+
   const authorInput = document.getElementById("author");
   const titleInput = document.querySelector("#form input[name=title]");
+const bookIdInput = document.querySelector("#form input[name=bookId]");
+
   let selectedBookId = null;
             const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
+
           deleteButton.addEventListener("click", (e) =>{
             fetch(`http://localhost:3030/jsonstore/collections/books/${id}`, {
               method: "DELETE"
@@ -23,7 +29,7 @@ function attachEvents() {
           });
 
 loadBooksButton.addEventListener('click', (e) => {
-  fetch('http://localhost:3030/jsonstore/collections/books')
+  fetch(baseUrl)
   .then(res => res.json())
   .then(result => {
     bookListElement.innerHTML = "";
@@ -66,11 +72,33 @@ authorInput.value = '';
   
 })
 
+});
+updateBookButton.addEventListener('click',(e)=>{
+  e.preventDefault();
+const title = titleInput.value;
+const author = authorInput.value;
+const bookId = bookIdInput.value;
 
+if (bookId) {
+  return;
+}
+fetch(baseUrl,{
+  method:'PUT',
+  headers:{
+'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title,
+    author
+  }),
+})
+.then(res => res.json())
+.then(data=> {
 
-}
-)
-}
+})
+
+})
+
   function deleteBook(id) {
       fetch(`http://localhost:3030/jsonstore/collections/books/${id}`, {
           method: "DELETE"
@@ -119,6 +147,31 @@ butonsTd.appendChild(deleteButton);
 bookTr.appendChild(titleTd);
 bookTr.appendChild(authroTd);
 bookTr.appendChild(butonsTd);
+
+editButton.addEventListener('click', (e)=> {
+    e.preventDefault();
+
+  if (editButton.textContent === 'Cancel') {
+    titleInput.value = '';
+  authorInput.value = '';
+  bookIdInput.value = '';
+
+  editButton.textContent = 'Edit'
+updateBookButton.replaceWith(createBookButton);
+ bookTr.removeAttribute('data-update');
+  return;
+  }
+
+  titleInput.value = book.title;
+  authorInput.value = book.author;
+  bookIdInput.value = book._id;
+
+  editButton.textContent = 'Cancel';
+  createBookButton.replaceWith(updateBookButton);
+  bookTr.setAttribute('data-update',true);
+
+})
+// deleteButton.addEventListener(deleteBook);
 
                 return bookTr;
 
@@ -207,5 +260,5 @@ bookTr.appendChild(butonsTd);
 //       authorInput.value = "";
 //       titleInput.value = "";
 // }
-
+}
 attachEvents();
