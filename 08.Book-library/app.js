@@ -13,6 +13,7 @@ updateBookButton.textContent = 'Update'
 const bookIdInput = document.querySelector("#form input[name=bookId]");
 
   let selectedBookId = null;
+
             const deleteButton = document.createElement("button");
           deleteButton.textContent = "Delete";
 
@@ -34,7 +35,12 @@ loadBooksButton.addEventListener('click', (e) => {
   .then(result => {
     bookListElement.innerHTML = "";
 
-    const books = Object.values(result);
+    const books = Object.keys(result).reduce((acc,_id)=>{
+
+      acc.push(_id,result[_id])
+      return acc;
+
+    },[]);
 
     books.map(book=> createBookItem(book)).forEach(bookElement => {
   bookListElement.appendChild(bookElement);
@@ -73,6 +79,7 @@ authorInput.value = '';
 })
 
 });
+
 updateBookButton.addEventListener('click',(e)=>{
   e.preventDefault();
 const title = titleInput.value;
@@ -82,19 +89,30 @@ const bookId = bookIdInput.value;
 if (bookId) {
   return;
 }
-fetch(baseUrl,{
+fetch(`${baseUrl}/${bookId}`,{
   method:'PUT',
   headers:{
 'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     title,
-    author
+    author,
+    _id:bookId
   }),
 })
 .then(res => res.json())
 .then(data=> {
+const currentRow =
+bookListElement.querySelector('tr[data-update=true]');
+const titleTd =currentRow.firstChild;
+const authorTd = titleTd.nextSibling;
 
+titleTd.textContent = title;
+authorTd.textContent = author;
+
+editButton.textContent = 'Edit'
+updateBookButton.replaceWith(createBookButton);
+ bookTr.removeAttribute('data-update');
 })
 
 })
@@ -136,8 +154,9 @@ authroTd.textContent = book.author;
 
 const editButton = document.createElement('button');
 editButton.textContent = 'Edit';
-const deleteButton = document.createElement('button');
-deleteButton.textContent = 'Delete';
+const deleteButton = document.createElement("button");
+          deleteButton.textContent = "Delete";
+          deleteButton.addEventListener("click", () => deleteBook(book._id));
 
 const butonsTd = document.createElement('td');
 
