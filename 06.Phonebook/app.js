@@ -1,7 +1,7 @@
 function attachEvents() {
     const baseUrl = "http://localhost:3030/jsonstore/phonebook";
     document.getElementById("btnLoad").addEventListener("click", getAllPhones);
-    document.querySelector("#btnCreate").addEventListener("click", createContact);
+    document.getElementById("btnCreate").addEventListener("click", createContact);
   
     async function createContact() {
       const person = document.querySelector("#person").value;
@@ -16,14 +16,17 @@ function attachEvents() {
         .then((resp) => resp.json())
         .then(() => {
           getAllPhones();
-          person.value = "";
-          phone.value = "";
+          document.querySelector("#person").value = "";
+          document.querySelector("#phone").value = "";
         });
     }
   
     async function getAllPhones() {
       const phonesInfo = await (await fetch(baseUrl)).json();
-      const phoneBook = document.querySelector("#phonebook");
+      
+      const phoneBook = document.getElementById("phonebook");
+      
+
       Object.values(phonesInfo).forEach((contact) => {
         const li = document.createElement("li");
   
@@ -32,16 +35,17 @@ function attachEvents() {
   
         li.textContent = `${contact.person}: ${contact.phone}`;
         li.appendChild(delButton);
-  
+ 
         phoneBook.appendChild(li);
+        
+        delButton.addEventListener("click", deleteContact);
   
-        delButton.addEventListener("click", deleteContact(contact._id));
-  
-        function deleteContact(id) {
+        function deleteContact() {
+ const id = contact._id;
           fetch(`http://localhost:3030/jsonstore/phonebook${id}`, {
-            method: "DELETE",
+            method: 'DELETE',
           });
-          li.remove();
+         li.remove();
         }
       });
     }
