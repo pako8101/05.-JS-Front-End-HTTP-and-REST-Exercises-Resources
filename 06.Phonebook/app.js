@@ -1,4 +1,4 @@
-function attachEvents() {
+async function attachEvents() {
     const baseUrl = "http://localhost:3030/jsonstore/phonebook";
     document.getElementById("btnLoad").addEventListener("click", getAllPhones);
     document.getElementById("btnCreate").addEventListener("click", createContact);
