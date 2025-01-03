@@ -34,9 +34,13 @@ articleHeader.textContent =  studentInput.value;
     articleElem.appendChild(scoreParagraph);
 
     const editButton = document.createElement('button');
+    editButton.classList.add('action-btn');
+    editButton.classList.add('edit');
     editButton.textContent = 'Edit';
     
     const applyButton = document.createElement('button');
+    applyButton.classList.add('apply');
+    applyButton.classList.add('action-btn');
     applyButton.textContent = 'Apply';
 
     liElem.appendChild(articleElem);
@@ -47,20 +51,19 @@ articleHeader.textContent =  studentInput.value;
 previewList.appendChild(liElem);
 
 clearForm();
-nextButton.setAttribute('disabled',true);
+nextButton.setAttribute('disabled','disabled');
 
 editButton.addEventListener('click',(e)=>{
 
    const studentName = previewList.querySelector('h4').textContent;
 
   const paragrElemets= previewList.querySelectorAll('article p');
-  const [uniP,scoreP]= Array.from(paragrElemets)
+  const [uniP,scoreP]= Array.from(paragrElemets);
 
-   
 
     studentInput.value = studentName;
-    universityInput.value = uniP.textContent.split(': ').at(1);
-    scoreInput.value = scoreP.textContent.split(': ').at(1);
+    universityInput.value = uniP.textContent.split(': ')[1];
+    scoreInput.value = scoreP.textContent.split(': ')[1];
 
     previewList.innerHTML='';
 nextButton.removeAttribute('disabled');
