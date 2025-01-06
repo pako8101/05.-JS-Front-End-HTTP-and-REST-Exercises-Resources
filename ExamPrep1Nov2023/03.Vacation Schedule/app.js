@@ -1,18 +1,67 @@
 const baseUrl = 'http://localhost:3030/jsonstore/tasks/';
 
-const loadVacations = document.getElementById('load-vacations');
+const loadVacation = document.getElementById('load-vacations');
 const vacationList = document.getElementById('list');
+const formElement = document.querySelector('.form form')
+const nameInput = document.getElementById('name');
 
-loadVacations.addEventListener('click', (e) => {
-    fetch(baseUrl)
-        .then(res => res.json())
-        .then(result => {
-            console.log(Object.values(result));
+const numDaysInput = document.getElementById('num-days');
+const fromDateInput = document.getElementById('from-date');
+const formAddButton = document.getElementById('add-vacation');
+const formEditButton = document.getElementById('edit-vacation');
 
-        });
+loadVacation.addEventListener('click', loadVacations);
+
+formAddButton.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const newVacation = {
+        name: nameInput.value,
+        days: numDaysInput.value,
+        data: fromDateInput.value
+    };
+
+    fetch(baseUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newVacation)
+    })
+        .then(loadVacations)
+        .then(clearForm);
+
+
 });
 
+formEditButton.addEventListener('click',(e)=>{
+e.preventDefault();
+
+
+})
+
+function clearForm() {
+    nameInput.value = '';
+    numDaysInput.value = '';
+    fromDateInput.value = '';
+
+}
+
+async function loadVacations() {
+    return fetch(baseUrl)
+        .then(res => res.json())
+        .then(result => {
+            renderVacations(Object.values(result));
+
+        });
+};
+
+
 function renderVacations(vacations) {
+    vacationList.innerHTML = '';
+    vacations.map(renderVacation)
+        .forEach(vacationElement => vacationList.appendChild(vacationElement));
+
 
 
 }
@@ -32,14 +81,31 @@ function renderVacation(vacation) {
 
     const changeButton = document.createElement('button');
     changeButton.className = 'change-btn';
-    changeButton.textContent = 'Change'
+    changeButton.textContent = 'Change';
+    changeButton.addEventListener('click', () => {
+
+        nameInput.value = vacation.name;
+        numDaysInput.value = vacation.days;
+        fromDateInput.value = vacation.data;
+
+        container.remove();
+
+        formEditButton.removeAttribute('disabled');
+        formAddButton.setAttribute('disabled','disabled')
+
+    })
 
     const doneButton = document.createElement('button');
     doneButton.className = 'done-btn';
     doneButton.textContent = 'Done';
 
     container.appendChild(h2Element);
-    
+    container.appendChild(h3DateElement);
+    container.appendChild(h3DaysElement);
+    container.appendChild(changeButton);
+    container.appendChild(doneButton);
+
+    return container;
 
 }
 
