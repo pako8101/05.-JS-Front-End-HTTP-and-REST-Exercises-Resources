@@ -2,7 +2,7 @@ const baseUrl = 'http://localhost:3030/jsonstore/tasks/';
 
 const loadVacation = document.getElementById('load-vacations');
 const vacationList = document.getElementById('list');
-const formElement = document.querySelector('.form form')
+const formElement = document.querySelector('#form form')
 const nameInput = document.getElementById('name');
 
 const numDaysInput = document.getElementById('num-days');
@@ -28,14 +28,44 @@ formAddButton.addEventListener('click', (e) => {
         },
         body: JSON.stringify(newVacation)
     })
-        .then(loadVacations)
-        .then(clearForm);
+        .then(loadVacations);
+        
+        (clearForm);
 
 
 });
 
-formEditButton.addEventListener('click',(e)=>{
-e.preventDefault();
+formEditButton.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    const vacationId = formElement.dataset.vacation;
+
+    const vacation = {
+        _id: vacationId,
+        name: nameInput.value,
+        days: numDaysInput.value,
+        data: fromDateInput.value
+    };
+
+    fetch(`${baseUrl}/${vacationId}`, {
+
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(vacation)
+
+    }).then(loadVacations)
+        .then(() => {
+            formAddButton.removeAttribute('disabled');
+            formEditButton.setAttribute('disabled', 'disabled');
+
+            clearForm();
+            delete formElement.dataset.vacation;
+        });
+
+
+
 
 
 })
@@ -82,6 +112,7 @@ function renderVacation(vacation) {
     const changeButton = document.createElement('button');
     changeButton.className = 'change-btn';
     changeButton.textContent = 'Change';
+
     changeButton.addEventListener('click', () => {
 
         nameInput.value = vacation.name;
@@ -91,13 +122,26 @@ function renderVacation(vacation) {
         container.remove();
 
         formEditButton.removeAttribute('disabled');
-        formAddButton.setAttribute('disabled','disabled')
+        formAddButton.setAttribute('disabled', 'disabled');
+
+        formElement.dataset.vacation = vacation._id;
 
     })
 
     const doneButton = document.createElement('button');
     doneButton.className = 'done-btn';
     doneButton.textContent = 'Done';
+
+    doneButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        fetch(`${baseUrl}/${vacation._id}`, {
+            method: 'DELETE'
+        }).then(loadVacations);
+
+    });
+
+
 
     container.appendChild(h2Element);
     container.appendChild(h3DateElement);
