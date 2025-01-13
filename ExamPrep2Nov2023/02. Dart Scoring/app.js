@@ -1,44 +1,43 @@
 window.addEventListener("load", solve);
 
 function solve() {
+  let playerNameInput = document.getElementById("player");
+  let playerScore = document.getElementById("score");
+  let round = document.getElementById("round");
+  let publishBtn = document.getElementById("add-btn");
+  let clearBtn = document.querySelector(".clear");
 
-  let playerNameInput = document.getElementById('player');
-  let playerScore = document.getElementById('score');
-  let round = document.getElementById('round');
-  let publishBtn = document.getElementById('add-btn');
-  let clearBtn = document.querySelector('.clear');
+  let formElement = document.querySelector("form");
 
-  let formElement = document.querySelector('form')
-
-  publishBtn.addEventListener('click', publish);
+  publishBtn.addEventListener("click", publish);
 
   function publish() {
-
-    let isInvalidInput = playerNameInput.value === '' ||
-      playerScore.value === '' ||
-      round.value === '';
+    let isInvalidInput =
+      playerNameInput.value === "" ||
+      playerScore.value === "" ||
+      round.value === "";
 
     if (isInvalidInput) {
       return;
     }
 
-    let reviewList = document.getElementById('sure-list');
-    let publishedList = document.getElementById('scoreboard-list');
+    let reviewList = document.getElementById("sure-list");
+    let publishedList = document.getElementById("scoreboard-list");
 
-    let li = document.createElement('li');
-    li.classList.add('dart-item');
+    let li = document.createElement("li");
+    li.classList.add("dart-item");
 
-    let articleElement = document.createElement('article');
+    let articleElement = document.createElement("article");
 
-    let nameParagraph = document.createElement('p');
+    let nameParagraph = document.createElement("p");
     nameParagraph.textContent = playerNameInput.value;
     let nameVal = playerNameInput.value;
 
-    let scoreParagraph = document.createElement('p');
+    let scoreParagraph = document.createElement("p");
     scoreParagraph.textContent = `Score: ${playerScore.value}`;
     let scoreVal = playerScore.value;
 
-    let roundParagraph = document.createElement('p');
+    let roundParagraph = document.createElement("p");
     roundParagraph.textContent = `Round: ${round.value}`;
     let roundVal = round.value;
 
@@ -46,17 +45,17 @@ function solve() {
     articleElement.appendChild(scoreParagraph);
     articleElement.appendChild(roundParagraph);
 
-    let editBtn = document.createElement('button');
-    editBtn.classList.add('btn');
-    editBtn.classList.add('edit');
-    editBtn.textContent = 'edit';
-    editBtn.addEventListener('click', edit);
+    let editBtn = document.createElement("button");
+    editBtn.classList.add("btn");
+    editBtn.classList.add("edit");
+    editBtn.textContent = "edit";
+    editBtn.addEventListener("click", edit);
 
-    let postBtn = document.createElement('button');
-    postBtn.classList.add('btn');
-    postBtn.classList.add('ok');
-    postBtn.textContent = 'ok';
-    postBtn.addEventListener('click', post);
+    let postBtn = document.createElement("button");
+    postBtn.classList.add("btn");
+    postBtn.classList.add("ok");
+    postBtn.textContent = "ok";
+    postBtn.addEventListener("click", post);
 
     li.appendChild(articleElement);
     li.appendChild(editBtn);
@@ -67,9 +66,7 @@ function solve() {
     publishBtn.disabled = true;
     formElement.reset();
 
-
     function edit() {
-
       playerNameInput.value = nameVal;
       playerScore.value = scoreVal;
       round.value = roundVal;
@@ -77,11 +74,9 @@ function solve() {
       reviewList.removeChild(li);
 
       publishBtn.disabled = false;
-
     }
 
     function post() {
-
       reviewList.removeChild(li);
       li.removeChild(postBtn);
       li.removeChild(editBtn);
@@ -90,14 +85,9 @@ function solve() {
 
       publishBtn.disabled = false;
 
-      clearBtn.addEventListener('click', () => {
+      clearBtn.addEventListener("click", () => {
         location.reload();
-      })
-
+      });
     }
-
   }
-
-
-
 }
